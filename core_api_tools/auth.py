@@ -7,13 +7,12 @@ from argon2 import PasswordHasher
 
 SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'my_secret_key')
 ALGORITHM = "HS256"
-EXPIRATION_TIME = timedelta(hours=30)
 
 def generate_uuid():
     return str(uuid.uuid4())
 
-def create_jwt_token(data: dict) -> str:
-    expiration = datetime.now(timezone.utc) + EXPIRATION_TIME
+def create_jwt_token(data: dict, expire = timedelta(hours=12)) -> str:
+    expiration = datetime.now(timezone.utc)
     data.update({"exp": expiration})
     token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return token

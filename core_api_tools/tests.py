@@ -3,13 +3,16 @@ import logging
 from httpx import Client, Response
 import logging
 import pytest
-from conftest import BASE_URL
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+BASE_URL = os.getenv('BASE_URL')
+
 if BASE_URL is None:
     raise Exception('You should set variable BASE_URL to use core.tests')
+
 
 class ApiClient(Client):
     """
@@ -27,13 +30,14 @@ class ApiClient(Client):
         :param url: путь на домене, по которому отправляем запрос
         """
         logger.info(f'{method} {url}')
-        
+
         return super().request(method, url, **kwargs)
-    
-    def log(self, obj, indent = 4):
+
+    def log(self, obj, indent=4):
         if is_json_serializable(obj):
-            return logger.info(json.dumps(obj, indent=indent, ensure_ascii=False ))
+            return logger.info(json.dumps(obj, indent=indent, ensure_ascii=False))
         logger.info(obj)
+
 
 def is_json_serializable(obj):
     try:
@@ -41,9 +45,8 @@ def is_json_serializable(obj):
         return True
     except (TypeError, OverflowError):
         return False
-    
 
-class TestApiClient:
-    @pytest.fixture(scope='class')
-    def client(self) -> ApiClient:
-        return ApiClient()
+
+@pytest.fixture()
+def client() -> ApiClient:
+    return ApiClient(base_url=BASE_URL)

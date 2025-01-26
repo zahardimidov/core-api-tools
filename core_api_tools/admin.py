@@ -8,11 +8,6 @@ from sqladmin import Admin as SQLAdmin
 from sqladmin import ModelView
 from sqladmin.authentication import AuthenticationBackend
 
-HOST = os.environ.get('HOST')
-
-if HOST is None:
-    raise Exception('You should set environ variable HOST to use core.admin')
-
 
 class AdminSettings(str, Enum):
     USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
@@ -20,7 +15,7 @@ class AdminSettings(str, Enum):
 
     SECRET_KEY = os.environ.get('ADMIN_SECRET_KEY', 'SECRET_KEY')
     BASE_URL = os.environ.get('ADMIN_BASE_URL', '/admin')
-    STATIC_URL = os.environ.get('ADMIN_STATIC_URL', '/admin/statics/')
+    STATIC_URL = os.environ.get('ADMIN_STATIC_URL')
 
     def __str__(self) -> str:
         return self.value
@@ -64,8 +59,8 @@ def my_url_for(context: dict, name: str, /, **path_params) -> str:
     request: Request = context.get("request")
     url = str(request.url_for(name, **path_params))
 
-    if '/admin/statics/' in url:
-        return HOST + AdminSettings.STATIC_URL + path_params['path']
+    if '/admin/statics/' in url and AdminSettings.STATIC_URL:
+        return AdminSettings.STATIC_URL + path_params['path']
 
     return url
 
