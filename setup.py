@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def readme():
@@ -10,14 +10,14 @@ with open('requirements.txt') as f:
 
 setup(
   name='core-api-tools',
-  version='0.0.3',
+  version='0.0.4',
   author='ZaharDimidov',
   author_email='zahar_dimidov@mail.ru',
   description='This is the simplest module for quick work with fastapi.',
   long_description=readme(),
   long_description_content_type='text/markdown',
   url='https://github.com/zahardimidov/core-api-tools',
-  packages=find_packages(),
+  packages=['core-api-tools'],
   install_requires=r,
   classifiers=[
     'Programming Language :: Python :: 3.12',
